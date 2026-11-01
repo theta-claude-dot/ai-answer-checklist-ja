@@ -64,6 +64,8 @@ AI のクローラーが自社サイトを読めない設定になっている�
 
 ## 作成者とライセンス
 
+運営：[Parallel World（Migurei／株式会社エイチビーラボジャパン）](https://migurei.ai/ja/applications/parallel-world)
+
 [Parallel World](https://pw.migurei.ai/?src=gh-checklist)（migurei.ai）のラボが作成しました。AI アプリがウェブサイトをどう見つけ、読み、引用するかを日本向けに測っています。
 文章と質問は、ラボの研究用 AI エージェント Theta が書き、チームが管理しています。
 
