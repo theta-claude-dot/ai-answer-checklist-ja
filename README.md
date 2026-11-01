@@ -69,18 +69,50 @@ AI のクローラーが自社サイトを読めない設定になっている�
    回答の抜き書き（`answer_excerpt`）を書きます。
 4. **点数はつけない。** 合計点や独自のスコアは作らず、yes／no と URL を残します。数えたいときは、読むときに記録から数えます
    （例：「11 月、ChatGPT で自社の名前が出た質問は 30 問中 7 問」）。
-5. **同じ日に 2〜3 回聞き、先月と比べる。** 回答は聞くたびに変わるので、1 回で「出た」「出なかった」と決めず、「3 回中 2 回」のように読みます。
+5. **同じ日に 2〜3 回聞き、先月と比べる。** 回答は聞くたびに変わるので、1 回で「出た」「出なかった」と決めず、「3 回中 2 回」のように読みます
+   （`n_asked`、`n_named` の列。回数については次の質問を参照）。
    月 1 回、同じ週の同じ曜日に聞き、同じ質問・同じアプリで先月の行と並べます。
 
 当ラボが自分の名前で AI アプリに聞き、この形で記録した例：
 [「Parallel World」と名前で聞くと AI は何と答えるか：自社の記録（2026年10月）](https://pw.migurei.ai/ja/research/ai-answers-about-our-name?src=gh-checklist-faq)
+
+### 同じ質問を何回聞けば足りる？
+
+何回なら足りるかは、当ラボの記録からは言えません。分かったのは、同じ質問を 4 回聞いても、挙がる名前の顔ぶれが大きく揺れることです。
+
+- ChatGPT に同じ質問を 4 回ずつ聞いた 9 問（2026年10月12日）では、質問ごとに数えたサービス名 83 件のうち 37 件（45%）が、4 回のうち 1 回にしか出ませんでした
+  （同じ名前が別の質問にも出たときは、質問ごとに 1 件と数えています。9 問を通して挙がった名前は 34 種類です）。
+- 4 回のうち 3 回分だけで「2 回以上出た名前」を数えると、4 回分の「半分以上（2 回以上）出た名前」と顔ぶれが一致したのは、36 通り中 10 通り（28%）でした
+  （9 問それぞれで、4 回から 3 回を選ぶ 4 通り）。
+
+**記録のしかた**
+
+- 質問 × アプリごとに、「出た」「出ない」ではなく「n 回中 k 回」で残します。[`record-template.csv`](record-template.csv) の
+  `n_asked`（その日に同じアプリで同じ質問を聞いた回数）と `n_named`（そのうち自社の名前が出た回数）に書きます。
+  その日に最後に聞いた行にだけ書き、ほかの行は空欄にします。
+- 毎月同じ回数で聞きます。回数が変わると、先月との差が答えの変化なのか、聞いた回数の違いなのかを分けられません。
+- 他社の名前も、読むときに `competitors_named` から「n 回中 k 回」で数えると、いつも出る名前とたまにしか出ない名前を分けられます。
+
+反復して聞く機能を持つツールも出てきています。ツールを使う場合も、何回聞いたか（n）と何回出たか（k）が分かれば、手で記録した数字と並べて読めます。
+
+**言えないこと**
+
+- ChatGPT 1 つのアプリ（無料アカウント、日本国外の IP アドレスから）で、1 日に聞いた記録です。Gemini、Claude、Perplexity などでは数えていません。
+- 1 問 4 回は少ない回数です。9 問のうち 1 問は、4 回のうち 2 回の回答からサービス名を 1 つも取り出せませんでした。
+- 28% は高めに出る数字です。比べる相手の「4 回分の顔ぶれ」も同じ 4 回から作っているので、もっと多く聞いたときの顔ぶれとの一致は、これより低い可能性があります。
+  また 36 通りは同じ回答を共有しているので、互いに独立した 36 回の試しではありません。
+- サービス名は回答の文から自動で取り出したもので、すべてを人の目で確かめてはいません。
+- 「5 回なら足りる」「10 回なら足りる」とは言っていません。この記録が示すのは、4 回でも顔ぶれが揺れることだけです。
+
+当ラボが同じ質問を何周か聞き、答えをそのまま記録した例：
+[「Parallel World」と名前で聞くと AI は何と答えるか：自社の記録（2026年10月）](https://pw.migurei.ai/ja/research/ai-answers-about-our-name?src=gh-checklist-repeat)
 
 ## ファイル
 
 | ファイル | 内容 |
 |---|---|
 | [`questions.csv`](questions.csv) | 質問 30 問（`id`、`kind`＝型、`question_ja`、`placeholders`＝置き換える部分、`intent_note`＝何を確かめるか） |
-| [`record-template.csv`](record-template.csv) | 記録シート（見出し行だけ） |
+| [`record-template.csv`](record-template.csv) | 記録シート（見出し行だけ。最後の 2 列 `n_asked`、`n_named` は「n 回中 k 回」の記録） |
 | [`how-to-read.md`](how-to-read.md) | 記録する項目、記録の例、点数をつけない理由、回答が毎回変わることへの対処、読み方 |
 | [`LICENSE`](LICENSE) | CC BY 4.0 |
 
@@ -105,6 +137,11 @@ the same AI apps (ChatGPT, Gemini, Perplexity, Google AI Overviews…) once a mo
 whether your site was linked and to which URL, which competitors appeared and which domains were cited. No total score: keep the raw
 observations and count when you read them. Answers vary between runs, so ask each question two or three times and note the app's mode or
 model. See `how-to-read.md` (Japanese, with an English summary).
+
+How many times is enough? We cannot say. When we asked ChatGPT each of 9 questions 4 times (12 October 2026), 37 of the 83 service names
+(counted per question) appeared in only 1 of the 4 answers; the names seen at least twice in 3 runs matched those seen in at least half of
+all 4 runs in 10 of 36 cases (28%, an upper bound: one app, one day, 4 runs). Record each question and app as "named k times out of n"
+(columns `n_asked`, `n_named`), not as named / not named, and ask the same number of times every month.
 
 If the AI cannot read your own site, check whether AI crawlers can reach it:
 https://pw.migurei.ai/ja/check/ai-bots?src=gh-checklist

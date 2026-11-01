@@ -48,12 +48,15 @@ English summary at the end.
 | `cited_domains` | 出典として挙がったサイトのドメイン（例：比較サイト、口コミサイト、ニュース） |
 | `answer_excerpt` | 回答の一部をそのまま貼る（自社や他社の名前が出た段落など） |
 | `memo` | 誤った情報（古い料金、違う住所、別の会社との取り違え）、気づいたこと |
+| `n_asked` | その日に同じアプリで同じ質問を聞いた回数。その日に最後に聞いた行にだけ書き、ほかの行は空欄 |
+| `n_named` | そのうち自社の名前が出た回数（`company_named` が yes の行の数）。`n_asked` と同じ行に書く |
 
-記録の例（架空の会社）：
+記録の例（架空の会社。同じ質問を 3 回聞き、2 回目の行は省略）：
 
 ```csv
-checked_at_jst,app,mode_model,account,question_id,question_asked,run_no,company_named,named_order,company_linked,link_urls,competitors_named,cited_domains,answer_excerpt,memo
-2026-11-01 10:15,ChatGPT,検索オン,無料アカウント,Q03,大阪で勤怠管理システムを頼むなら、どこがいいですか？,1,yes,2/5,no,,A社;B社;C社;D社,example-hikaku.jp;example-news.jp,"…2. 株式会社サンプル：大阪の中小企業に導入実績が多く…",料金が去年の金額のまま
+checked_at_jst,app,mode_model,account,question_id,question_asked,run_no,company_named,named_order,company_linked,link_urls,competitors_named,cited_domains,answer_excerpt,memo,n_asked,n_named
+2026-11-01 10:15,ChatGPT,検索オン,無料アカウント,Q03,大阪で勤怠管理システムを頼むなら、どこがいいですか？,1,yes,2/5,no,,A社;B社;C社;D社,example-hikaku.jp;example-news.jp,"…2. 株式会社サンプル：大阪の中小企業に導入実績が多く…",料金が去年の金額のまま,,
+2026-11-01 10:25,ChatGPT,検索オン,無料アカウント,Q03,大阪で勤怠管理システムを頼むなら、どこがいいですか？,3,no,,no,,A社;B社;D社,example-hikaku.jp,"…1. A社：…",,3,2
 ```
 
 `answer_excerpt` のように文の中に `,` が入る列は、上の例のように `"` で囲みます。
@@ -71,6 +74,9 @@ Excel で文字化けするときは「データ」→「テキストまたは C
 
 - 同じアプリに同じ質問をしても、数分後に聞き直すだけで挙がる会社や順番が変わることがあります。1 回の結果で「出た」「出なかった」と決めないでください。
 - できれば 1 つの質問を同じ日に 2〜3 回聞き、`run_no` を変えて別の行に書きます。「3 回中 2 回出た」のように読みます。
+  その日に最後に聞いた行の `n_asked`（聞いた回数）と `n_named`（名前が出た回数）に、この「n 回中 k 回」を書いておきます。毎月同じ回数で聞きます。
+- 何回聞けば足りるかは、まだ言えません。当ラボが ChatGPT に同じ質問を 4 回ずつ聞いた 9 問（2026年10月12日）では、質問ごとに数えたサービス名 83 件のうち
+  37 件（45%）が 4 回のうち 1 回にしか出ませんでした。数え方と「言えないこと」は README の「同じ質問を何回聞けば足りる？」にあります。
 - アプリ側のモデルや機能が変わると、こちらが何もしなくても答えが変わります。画面に出ているモデル名やモードを毎回 `mode_model` に書いておくと、変化の理由を分けやすくなります。
 - 月 1 回、同じ週の同じ曜日に聞くと、前月との比較がしやすくなります。
 
@@ -96,6 +102,7 @@ Excel で文字化けするときは「データ」→「テキストまたは C
 
 One row per app, per question, per run: date and time (JST), app, mode or model if shown, account type, question id and the exact text asked,
 run number, whether your company was named (yes/no) and in which position, whether your site was linked (yes/no) and to which URL,
-competitors named, cited domains, a pasted excerpt, and a memo for wrong facts. Do not build a total score: record raw observations and count
+competitors named, cited domains, a pasted excerpt, a memo for wrong facts, and on the last run of the day for that question and app,
+`n_asked` (times asked) and `n_named` (times your company was named), so the result reads "k out of n". Do not build a total score: record raw observations and count
 at reading time (for example "named in 7 of 30 questions on ChatGPT in November"). Answers change between runs and with model updates, so ask
 each question 2–3 times on the same day, keep the wording fixed, and compare the same question and app month to month.
